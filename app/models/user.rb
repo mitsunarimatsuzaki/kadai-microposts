@@ -12,7 +12,7 @@ class User < ApplicationRecord
   has_many :reverses_of_relationship, class_name: 'Relationship', foreign_key: 'follow_id'
   has_many :followers, through: :reverses_of_relationship, source: :user
   has_many :favoritenets
-  has_many :favorite_microposts, through: :favoritnets, source: :micropost
+  has_many :favorite_microposts, through: :favoritenets, source: :micropost
 
 
   def follow(other_user)
@@ -36,17 +36,17 @@ class User < ApplicationRecord
 
   def favorite(other_user)
     unless self == other_user
-     self.favoritenets.find_by(micropost_id: other_micropost.id)
+     self.favoritenets.find_or_create_by(micropost_id: other_user.id)
     end
   end
 
   def unfavorite(other_user)
-    favoritenet = self.favoritenets.find_by(micropost_id: other_micropost.id)
+    favoritenet = self.favoritenets.find_by(micropost_id: other_user.id)
     favoritenet.destroy if favoritenet
   end
 
-  def favorite_micropost?(other_user)
-      self.favorite_microposts.include?(other_user)
+  def favorite_micropost?(micropost)
+      self.favorite_microposts.include?(micropost)
   end
 
 end
